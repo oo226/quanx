@@ -226,3 +226,355 @@ http-response ^https:\/\/api\.pinduoduo\.com\/api\/oak\/integration\/render scri
 http-response ^https:\/\/api\.pinduoduo\.com\/search script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 移除搜索结果推广
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
+# 微博&国际版
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Weibo.conf
+
+# hostname = api.weibo.*, *.api.weibo.*, mapi.weibo.*, *.uve.weibo.com, new.vip.weibo.cn, boot.biz.weibo.com
+
+
+# > 微博_请手动添加以下分流至本地
+; host, sdkapp.uve.weibo.com, direct
+
+# > 微博_AD_Preload
+^https?:\/\/api\.weibo\.cn\/\d\/ad\/preload url reject-dict
+# > 微博_首页顶部homeExtend
+^https?:\/\/api\.weibo\.cn\/\d\/groups\/allgroups\/v\d url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_帖子下方广告
+^https?:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?a=open_app url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_趋势页热门影片
+^https?:\/\/api\.weibo\.cn\/\d\/cardlist\?v_f=.*Weibo_intl url reject-dict
+# > 微博_用户推荐弹窗
+^https?:\/\/api\.weibo\.cn\/\d\/profile\/recommend_popuser url reject-dict
+# > 微博_开屏广告预加载处理
+^https?:\/\/boot.*weibo\.com\/v\d\/ad\/preload url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博_未登陆状态下首页信息流处理
+^https?:\/\/api\.weibo\.cn\/\d\/\w{5}\/(statuses_unread_hot_timeline|timeline) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博_每日一次的开屏广告请求
+^https?:\/\/boot.*weibo\.com\/v\d\/ad\/realtime url reject-200
+# > 微博_视频信息处理
+^https?:\/\/api\.weibo\.cn\/\d\/video\/tiny_stream_mid_detail url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博_去除底部超话栏表层浮icon及tips
+^https?:\/\/api\.weibo\.cn\/\d\/!\/huati\/discovery_home_bottom_getdotinfo url reject-dict
+# > 微博_屏蔽首页左上角每日的弹窗tips
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d/push/daily url reject-dict
+# > 微博_屏蔽发现页面搜索框热词
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/\w{5}\/cardlist url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博_应用内弹窗广告
+^https?:\/\/(preload-click|preload-impression)\.uve\.weibo\.com\/(interface\/wbpullad\/wbpullad_click\.php|wbapplua\/get_wbpullad_log\.lua) url reject
+# > 微博_屏蔽sdkconfig请求
+^https?:\/\/sdkapp\.uve\.weibo\.com\/interface\/sdk\/sdkconfig\.php url reject
+# > 微博_Spotlight
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/hot\/hours_spotlight url reject-dict
+# > 微博_自定义tab皮肤
+^https://api.weibo.cn/2/!/client/light_skin url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博_非会员设置tab皮肤
+^https://new.vip.weibo.cn/littleskin/preview url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博_去广告以及去除各部分推广模块
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/(searchall|page\?|messageflow) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/statuses/(unread_)?friends(/|_)timeline url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/groups/timeline url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/statuses/(container_timeline|unread_hot_timeline|extend|video_mixtimeline|unread_topic_timeline) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/profile/(me|container_timeline) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/video/(community_tab|remind_info|tiny_stream_video_list) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/search/(finder|container_timeline|container_discover) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/(checkin/show|\!/live/media_homelist|comments/build_comments|container/get_item) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/cardlist url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_屏蔽hotsearch
+^https?:\/\/weibointl\.api\.weibo\.c(n|om)\/portal\.php\?a=hot_search_users url reject-dict
+# > 微博国际版_屏蔽热推荐
+^https?:\/\/m?api\.weibo\.c(n|om)\/\d\/ad\/weibointl\? url reject-dict
+# > 微博国际版_屏蔽searching_info
+^https?:\/\/weibointl\.api\.weibo\.c(n|om)\/portal\.php.*a=get_searching_info url echo-response text/html echo-response https://github.com/ddgksf2013/Scripts/raw/master/weibo_search_info.json
+# > 微博国际版_屏蔽search_topic
+^https?:\/\/weibointl\.api\.weibo\.c(n|om)\/portal\.php.*feed&a=search_topic url echo-response text/html echo-response https://github.com/ddgksf2013/Scripts/raw/master/weibo_search_topic.json
+# > 微博国际版_屏蔽开屏广告
+^https?:\/\/weibointl\.api\.weibo\.c(n|om)\/portal\.php.*get_coopen_ads url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_屏蔽sdkad
+^https?://(sdk|wb)app\.uve\.weibo\.com(/interface/sdk/sdkad.php|/wbapplua/wbpullad.lua) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_趋势顶部Card去广告
+^https?:\/\/weibointl\.api\.weibo\.c(n|om)\/portal\.php.*a=trends url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_屏蔽用户VIP栏
+^https?:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?a=user_center url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+# > 微博国际版_热搜处理
+^https?:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?a=search_topic url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/weibo_json.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 影视网站
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Html/WebAdBlock.conf
+
+# hostname=www.zxzjhd.com, m.nivod4.tv, *.freeok.*, *netflix*, *bdys*,*cupfox*,*cokemv*,*pornhub.com,*lezhutv*,*bimi*,18comic.org,*5y*,*gimy*,*tkznp*,*czzy*,*ikandy*,*libvio*
+
+# > 08 在线之家[网页优化] - 网站地址：https://www.zxzjhd.com/
+^https?:\/\/www\.zxzjhd\.com\/($|[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/adguard.js
+
+# > 07 FreeOk[网页优化] - 网站地址：https://www.freeok.vip
+^https?:\/\/www\.freeok\.(vip|pro)(\/$|\/[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/adguard.js
+
+# > 06 哔嘀影视[网页优化] - 网站地址：https://www.bdys01.com 
+^https?:\/\/.*bdys.*com\/($|([a-z]+)\/(play\/)?\d+.*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/bdys.js
+
+# > 05 PornHub[网页优化] - 网站地址：https://cn.pornhub.com
+^https?:\/\/(cn|www)\.pornhub\.com\/_xa\/ads url reject-dict
+^https?:/\/(cn|www)\.pornhub\.com\/($|(view|video).*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/pornhub.js
+
+# > 04 Bimi[网页优化] - 网站地址：https://www.bimi.net
+^https?:/\/.*bimi.*net\/($|(vodshow|bangumi|type)\/[0-9a-z-\/]+\/$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/bimi.js
+
+# > 03 禁漫天堂[网页优化] - 网站地址：https://18comic.org
+^https?:\/\/.*18comic\.org\/($|(album|photo).*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/18comic.js
+
+# > 02 剧迷[网页优化] - 网站地址：https://gimys.app
+^https?:\/\/.*gimy.*\/($|[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/gimytv.js
+
+# > 01 厂长电影[网页优化] - 网站地址：https://czzy.art/
+^https?:\/\/.*czzy.*\/($|\?btwaf=\w+$|[0-9a-zA-Z=_/-]+\.html) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/qianoo.js
+
+
+# =========== 不维护的或网站已关服 =========== #
+# > 09 茶杯狐[网页优化] - 网站地址：https://cupfox.app
+^https?:/\/.*cupfox\.*\/($|[\u4E00-\u9FFFa-zA-Z0-9%=_/-]+$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/cupbox.js
+# > 08 Cokemv[网页优化] - 网站地址：https://cokemv.me 
+^https?:/\/cokemv\.me\/($|vod.*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/cokemv.js
+# > 07 555影视[网页优化] - 网站地址：https://555yy6.com
+^https?:\/\/.*5y.*\/($|[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/555.js
+# > 06 泥巴影视[网页优化] - 网站地址：https://m.nivod4.tv
+^https?:\/\/.*nivod.*\/($|[0-9a-zA-Z=_/-]+\.html) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/nivod.js
+# > 05 奈飞鸭[网页优化] - 网站地址：https://yanetflix.com
+^https?:\/\/.*netflix.*\/($|[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/netflix.js
+# > 04 LeZhu[网页优化] - 网站地址：http://www.lezhutv.com
+^https?:/\/.*lezhutv\.com\/($|(type|detail|play|index).*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/lezhu.js
+# > 03 天空影视[网页优化] - 网站地址：https://tkznp.com/
+^https?:\/\/.*tkznp.*com\/($|[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/tkys.js
+# > 02 真不卡[网页优化] - 网站地址：https://www.ikandy.fun
+^https?:\/\/.*ikandy.*fun\/($|(vod|top).*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/zhenbuka.js
+# > 01 libvio[网页优化] - 网站地址：https://www.libvio.me
+^https?:\/\/.*libvio.*me\/($|[0-9a-zA-Z=_/-]+\.html$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/libvio.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 微信跳过中间界面
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Function/UnblockURLinWeChat.conf
+
+#跳过中间界面，支付宝链接、被封禁链接进行通知弹窗跳转，在微信中用快照显示被封禁的链接（可选），在微信中进行强制重定向（可选），群聊 / 扫码均可使用，可选项可在脚本 2、3 行更改，也可在 BoxJs 中更改
+#Author：zZPiglet，原重写地址：https://raw.githubusercontent.com/zZPiglet/Task/master/UnblockURLinWeChat.conf
+
+# hostname = weixin110.qq.com, security.wechat.com
+
+^https\:\/\/(weixin110\.qq|security.wechat)\.com\/cgi-bin\/mmspamsupport-bin\/newredirectconfirmcgi\? url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/weixin110.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 菜鸟(支付宝小程序)&净化
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Cainiao.conf
+
+# hostname=cn-acs.m.cainiao.com, guide-acs.m.taobao.com,acs4miniapp-inner.m.taobao.com
+
+
+# > 菜鸟裹裹_amdc处理[Anti已将Amdc分流删除,故更换屏蔽策略]
+^http:\/\/amdc\.m\.taobao\.com url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amdc.js
+# > 菜鸟裹裹_首页中部的问邻居推广
+^https?:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.nbpresentation\.homepage\.merge\.get\.cn url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/cainiao_json.js
+# > 菜鸟裹裹_首页中部的惊喜福利推广
+^https?:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.nbpresentation\.protocol\.homepage\.get\.cn url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/cainiao_json.js
+# > 菜鸟裹裹_搜索框下方今日好物推荐
+^https?:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.adkeyword url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/cainiao_json.js
+# > 菜鸟裹裹_首页底部商品推广
+^https?:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.index\.cn url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/cainiao_json.js
+# > 菜鸟裹裹_通用广告请求
+^https?:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.(show|mshow)\.cn\/ url reject-200
+# > 菜鸟裹裹_支付宝小程序_通用广告请求
+^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.show url reject-200
+# > 菜鸟裹裹_支付宝小程序_底部商品推广新
+^https?:\/\/acs4miniapp-inner\.m\.taobao\.com\/gw\/mtop\.alimama\.abyss\.unionpage\.get url reject-200
+# > 菜鸟裹裹_支付宝小程序_底部商品推广旧
+^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.adx\.flyad\.getad url reject-200
+# > 菜鸟裹裹_支付宝小程序_匿名选择
+^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.nbmensa\.research\.researchservice\.consultmerge url reject-200
+# > 菜鸟裹裹_支付宝小程序_中部的寄件推广[导致的空白占位后续处理]
+^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.mshow url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/cainiao_json.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 高德地图&净化
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Amap.conf
+
+# hostname=*.amap.com
+
+# > 高德地图_amdc处理[Anti已将Amdc分流删除,故更换屏蔽策略]
+^http:\/\/amdc\.m\.taobao\.com url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amdc.js
+# > 高德地图_底部tab栏角标
+^https?:\/\/.*\.amap\.com\/ws\/message\/notice\/list url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_路线规划下方广告
+^https?:\/\/.*\.amap\.com\/ws\/faas\/amap-navigation\/card-service-route-plan\? url reject-dict
+# > 高德地图_首页右中广告
+^https?:\/\/.*\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_附近页面
+^https?:\/\/.*\.amap\.com\/ws\/shield\/search\/nearbyrec_smart url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_打车页面处理
+^https?:\/\/.*\.amap\.com\/ws\/promotion-web\/resource url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_Tip请求
+^https?:\/\/.*\.amap\.com\/ws\/boss\/order_web\/\w{8}_information url reject-200
+# > 高德地图_首页底部处理
+^https?:\/\/.*\.amap\.com\/ws\/faas\/amap-navigation\/main-page url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_通用广告请求
+^https?:\/\/.*\.amap\.com\/ws\/asa\/ads_attribution url reject
+# > 高德地图_开屏广告
+^https?:\/\/.*\.amap\.com\/ws\/valueadded\/alimama\/splash_screen url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_首页顶部推广
+^https?:\/\/.*\.amap\.com\/ws\/msgbox\/pull url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_我的页面
+^https?:\/\/.*\.amap\.com\/ws\/shield\/dsp\/profile\/index\/nodefaas url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_搜索框热词
+^https?:\/\/.*\.amap\.com\/ws\/shield\/search\/new_hotword url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/amap.js
+# > 高德地图_搜索框
+^https?:\/\/.*\.amap\.com\/ws\/shield\/scene\/recommend url reject-dict
+# > 高德地图_首页左上角
+^https?:\/\/.*\.amap\.com\/uploadimg\/\w+\.gif url reject-img
+# > 高德地图_左下天气
+^https?:\/\/.*\.amap\.com\/ws\/valueadded\/weather url reject-dict
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 12306
+
+# hostname = ad.12306.cn
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Scripts/master/12306.js
+
+> 使用说明：请在本地添加分流 host, ad.12306.cn, direct
+
+[rewrite_local]
+
+^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList url script-analyze-echo-response https://github.com/ddgksf2013/Scripts/raw/master/12306.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 小红书
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/XiaoHongShu.conf
+
+# hostname = edith.xiaohongshu.com, www.xiaohongshu.com, pages.xiaohongshu.com, referee.xiaohongshu.com
+
+# > 小红书_搜索结果推荐广告
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d+\/search\/notes\? url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_视频播放页商品推广
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/note\/widgets url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_短视频流去水印+强制开启保存功能
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/note\/redtube\? url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_信息流视频去水印+强制开启保存功能
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/note\/videofeed\? url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_信息流图片去水印
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/note\/feed\? url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_信息流图片[部分用户是下面请求]
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/note\/imagefeed url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_开屏广告
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/system_service\/splash_config url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_首页瀑布流
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/homefeed\? url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_启动处理
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/system_service\/config\? url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_热搜发现
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/search\/hot_list url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_默认填词
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/search\/hint url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_去除购物
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/homefeed\/categories url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_猜你想搜
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/search\/trending url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/redbook_json.js
+# > 小红书_通用广告请求
+^https?:\/\/www\.xiaohongshu\.com\/api\/sns\/v\d\/(tag\/)?ads url reject-dict
+# > 小红书_隐私屏蔽
+^https?:\/\/referee\.xiaohongshu\.com\/v\d\/stateReport url reject-dict
+# > 小红书_Switches
+^https?:\/\/pages\.xiaohongshu\.com\/data\/native\/matrix_switches url reject-dict
+# > 小红书_青少年请求
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/user\/teenager\/status url reject-dict
+# > 小红书_启动引导
+^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/guide\/home_guide url reject-dict
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 喜马拉雅
+
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Ximalaya.conf
+
+# hostname = *.xima*.*, *.xmcdn.*
+# ～ XiMaLaYa_喜马拉雅_首页顶部去除直播
+#^https?:\/\/.*\.xima.*\.com\/discovery-category\/customCategories url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/ximalaya_json.js
+# ～ XiMaLaYa_喜马拉雅_修复轮播Ad失效Bug
+#^https?:\/\/.*\.xima.*\.com\/discovery-feed\/focus\/queryF url reject
+# ～ XiMaLaYa_喜马拉雅_播放页_Live
+#^https?:\/\/.*\.xima.*\.com\/mobile-playpage\/view\/ url reject
+# ～ XiMaLaYa_喜马拉雅_MyInfo红点提醒
+#^https?:\/\/.*\.xima.*\.com\/chaos-notice-web\/v1\/message\/preview\/list url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽大红包Tips
+#^https?:\/\/.*\.xima.*\.com\/social-web\/bottomTabs\/dynamicEntrance\/status url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽gif弹窗Ad
+#^https?:\/\/.*\.xmcdn\.com\/\w{8}\/\w{4}-\w{16}\/.+gif$ url reject
+# ～ XiMaLaYa_喜马拉雅_gslb
+#^https?:\/\/gslb.*\.xima.*\.com\/ url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽Aged请求
+#^https?:\/\/.*\.xima.*\.com\/(dog-portal\/checkOld|(child-mobile\/child|aged-mobile\/aged)\/mode\/query) url reject
+# ～ XiMaLaYa_喜马拉雅_部分Tab弹窗
+#^https?:\/\/.*\.xima.*\.com\/discovery-feed\/isShowUserGiftPendant url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽红点提示
+#^https?:\/\/.*\.xima.*\.com\/mobile-user\/unread url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽minor请求
+#^https?:\/\/.*\.xima.*\.com/mobile-user/minorProtection/pop url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽隐私搜集
+#^https?:\/\/.*\.xima.*\.com\/collector\/xl\/v\d url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽版本更新
+#^https?:\/\/.*\.xima.*\.com\/butler-portal\/versionCheck url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽开屏广告
+#^https?:\/\/(adse\.wsa|adse|adbehavior|xdcs-collector)\.xima.*\.com\/.* url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽位置请求
+#^https?:\/\/.*\.xima.*\.com\/mobile\/discovery\/v\d\/location url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽热搜词
+#^https?:\/\/.*\.xima.*\.com\/(hub\/)?hotWord url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽热搜board
+#^https?:\/\/.*\.xima.*\.com\/(hub\/)?hotWordBillboard url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽搜索框定时_Ad
+#^https?:\/\/.*\.xima.*\.com\/(hub)?guideWord url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽实时Ad请求@
+#^https?:\/\/.*\.xima.*\.com\/api\/v\d\/adRealTime url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽ting_Ad
+#^https?:\/\/.*\.xima.*\.com\/ting\/(loading|feed|home)? url reject
+# ～ XiMaLaYa_喜马拉雅_屏蔽首页横幅_Ad
+#^https?:\/\/.*\.xima.*\.com\/focus-mobile\/focusPic url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/ximalaya_json.js
+# ～ XiMaLaYa_喜马拉雅_屏蔽首页动态_Ad
+#^https?:\/\/.*\.xima.*\.com\/discovery-feed\/v\d\/mix url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/ximalaya_json.js
+# ～ XiMaLaYa_喜马拉雅_屏蔽Tab页滚动_Ad
+#^https?:\/\/.*\.xima.*\.com\/discovery-category\/v\d/category url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/ximalaya_json.js
+# ～ XiMaLaYa_喜马拉雅_去除我的页面Ad_Tag
+#^https?:\/\/.*\.xima.*\.com\/mobile-user\/v\d\/homePage url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/ximalaya_json.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 度盘
+
+# 原链接：https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.adblock.js
+
+# hostname = pan.baidu.com, afd.baidu.com
+
+[rewrite_local]
+
+# > 百度网盘_开屏广告
+^https?:\/\/pan\.baidu\.com\/api\/getsyscfg url script-response-body https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.adblock.js
+# > 百度网盘_广告推广
+^https?:\/\/afd\.baidu\.com\/afd\/entry url script-response-body https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.adblock.js
+# > 百度网盘_启动弹窗
+^https?:\/\/.*baidu\.com\/rest\/.*\/membership\/proxy\/guide url reject-200
+# > 百度网盘_设置信息流
+^https?:\/\/pan\.baidu\.com\/act\/v\d\/(bchannel|welfare)\/list url reject-200
+# > 百度网盘_通用广告
+^https?:\/\/pan\.baidu\.com\/rest\/.*\/pcs\/ad url reject-200
+# > 百度网盘_活动推广
+^https?:\/\/pan\.baidu\.com\/act\/api\/activityentry url reject-200
+# > 百度网盘_游戏广告
+^https:\/\/pan\.baidu\.com\/rest\/.*\/membership\/user\?method=gamecenter url script-response-body https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.adblock.js
+# > 百度网盘_热搜list
+^https:\/\/pan\.baidu\.com\/feed\/hotlist url reject-200
+# > 百度网盘_搜索填词
+^https:\/\/pan\.baidu\.com\/queryintent\/queryhint url reject-200
+# > 百度网盘_金币乐园
+^https:\/\/pan\.baidu\.com\/coins\/center\/notice url reject-200
+# > 百度网盘_首页信息流
+^https:\/\/pan\.baidu\.com\/feed\/cardinfos url script-response-body https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.adblock.js
+
