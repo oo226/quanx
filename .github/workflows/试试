@@ -1,0 +1,311 @@
+# QuantumultX:
+# 搬运各位大佬的资源进行整合，感谢可莉，感谢莫离，感谢墨鱼，感谢叮当猫和各位开源大佬（排名不分先后）侵权删
+# 使用声明：本人并未参与任何形式的金钱交易，仅限测试和学习，请勿转载与贩卖，下载使用后24小时请删除
+
+
+# 度盘
+# hostname = pan.baidu.com
+^https:\/\/pan\.baidu\.com\/rest\/\d\.\d\/membership\/user url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/BaiduCloud.js
+
+# 阿里云盘 净化/解锁SVIP
+# hostname = *.aliyundrive.com, *.alipan.com
+^https?:\/\/(api|member)\.(aliyundrive|alipan)\.com\/(.+\/(users|activity|user\/get)|((business|apps)\/.+\/users|adrive\/.+\/user)) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/alidrive.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 网易云 
+# 原链接https://raw.githubusercontent.com/Yuheng0101/X/main/Scripts/NeteaseCloudMusic/netease.plugin
+
+# hostname = interface.music.163.com
+
+# > 网易云VIP弹窗屏蔽
+^https?:\/\/interface\d?\.music\.163\.com\/e?api\/vip\/cashier\/tspopup\/get url reject-200
+
+# > 网易云个人信息等拦截与转发@Yuheng0101
+^https?:\/\/interface\d?\.music\.163\.com\/e?api\/(mine\/collect\/header\/info|v\d\/user\/detail\/\d+|vipnewcenter\/app\/resource\/newaccountpage|music-vip-membership\/client\/vip\/info|batch|playlist\/privilege|search\/complex\/page|v\d\/(discovery\/recommend\/songs|playlist\/detail)) url script-response-body https://raw.githubusercontent.com/Yuheng0101/X/main/Scripts/NeteaseCloudMusic/netease.js
+
+# > 网易云歌曲播放与VIP验证@Yuheng0101
+^https?:\/\/interface\d?\.music\.163\.com\/e?api\/(song\/enhance\/player\/url\/v\d|vipauth\/app\/auth\/query) url script-request-body https://raw.githubusercontent.com/Yuheng0101/X/main/Scripts/NeteaseCloudMusic/netease.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# Bing首页简化
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/BingSimplify.conf
+
+# hostname = sapphire.api.microsoftapp.net, assets.msn.com, api.msn.com
+
+# > bing_首页优化@ddgksf2013
+^https?:\/\/sapphire\.api\.microsoftapp\.net\/config\/api\/v1\/get url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/bing.js
+
+# > bing_位置请求@ddgksf2013
+^https?:\/\/assets\.msn\.com\/service\/weather\/locations\/search url reject-dict
+
+# > bing_信息流@LE
+^https:\/\/assets\.msn\.com\/service\/news\/feed\/pages\/startmhp url reject-dict
+
+# > bing_天气请求@ddgksf2013
+^https?:\/\/api\.msn\.com\/weather url reject-dict
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# google自动翻页
+# 原链接https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Html/EndlessGoogle.conf
+
+# hostname = www.google.*,
+
+^https?:\/\/www\.google\..*\/search url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/master/endlessgoogle.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# QX一键导入内容预览
+# hostname = quantumult.app
+
+^https:\/\/quantumult\.app\/x\/open-app\/add-resource\?remote-resource= url script-analyze-echo-response https://raw.githubusercontent.com/chengkongyiban/shadowrocket/main/scripts/qx-resource-preview.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# 皮皮虾
+# hostname = *.pipix.com
+
+# > 去水印
+^https?:\/\/.*\.pipix\.com\/bds\/(feed\/stream|comment\/cell_reply|cell\/cell_comment|cell\/detail|ward\/list|user\/favorite|user\/cell_coment|user\/cell_userfeed|user\/publish_list) url script-response-body https://gist.githubusercontent.com/ddgksf2013/bb1dadbd32f67c68772caebcc70b0a33/raw/pipixia.adblock.js
+
+# > 去广告
+app_name=super&([\S]*)aid=\d+ url 307 app_name=super_pro&$1aid=1412
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# Spotify
+# hostname = api.spotify.com, spclient.wg.spotify.com
+
+# > 歌词翻译
+^https?:\/\/api\.spotify\.com\/v1\/tracks\? url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_response.js
+
+# > 歌词请求（JSON）
+^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json url script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js
+
+# > 歌词请求（Proto）
+^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*) url binary-body-mode script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js
+
+# > 翻译歌词响应（JSON）
+^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=Translate url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js
+
+# > 翻译歌词响应（Proto）
+^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=Translate url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js
+
+# > 外部歌词响应（JSON）
+^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=External url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js
+
+# > 外部歌词响应（Proto）
+^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=External url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js
+
+# > 去广告解锁 VIP
+^https:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/ url script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_remove_ads.js
+
+# > Proto处理
+^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_proto.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# Youtube Block AD
+# hostname = redirector*.googlevideo.com, *.googlevideo.com, www.youtube.com, s.youtube.com, youtubei.googleapis.com
+
+# > 视频广告请求
+(^https?:\/\/[\w-]+\.googlevideo\.com\/(?!dclk_video_ads).+?)&ctier=L(&.+?),ctier,(.+) url 302 $1$2$3
+^https?:\/\/[\w-]+\.googlevideo\.com\/(?!(dclk_video_ads|videoplayback\?)).+&oad url reject-200
+
+# > 视频PIP|后台播放|瀑布流|搜索页|播放页|短视频|贴片广告
+^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|reel\/reel_watch_sequence|get_watch) url script-request-body https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.request.preview.js
+^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch) url script-response-body https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.response.preview.js
+
+# > 通用广告请求
+^https?:\/\/(www|s)\.youtube\.com\/api\/stats\/ads url reject-200
+^https?:\/\/(www|s)\.youtube\.com\/(pagead|ptracking) url reject-200
+^https?:\/\/s\.youtube\.com\/api\/stats\/qoe\?adcontext url reject-200
+
+#使用说明：如果视频广告仍然存在，请在QuantumultX配置文件的[general]下添加 udp_drop_list=443
+#隐藏技能：点开Youtube视频的瞬间，退出APP，即可无PIP播放，适合单纯听音频的用户
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# GitHub增强
+# hostname = %APPEND% raw.githubusercontent.com,gist.githubusercontent.com
+
+# > 增强 GitHub
+enhanced_github = type=http-request,pattern=^https?:\/\/(raw|gist)\.githubusercontent\.com/.*?enhanced-github$,script-path=https://raw.githubusercontent.com/xream/scripts/main/surge/modules/enhanced-github/enhanced-github.js
+
+# 🔧 设置方法
+# 使用 BoxJs 订阅: https://raw.githubusercontent.com/xream/scripts/main/boxjs/boxjs.json
+# 在 http://boxjs.net/#/app/xream.enhanced_github 中设置
+
+# 📃 使用方法
+# 在链接的末尾添加 enhanced-github
+# 如 https://raw.githubusercontent.com/1/2/master/3.txt
+# 应为 https://raw.githubusercontent.com/1/2/master/3.txtenhanced-github
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# Google Rewrite（重定向）
+# hostname = %APPEND% www.google.cn, www.g.cn
+
+# > 重定向 www.g.cn 到 www.google.com
+^https?://(www\.)?g\.cn https://www.google.com 302
+
+# > 重定向 google.cn 到 www.google.com
+^https?://(www\.)?google\.cn https://www.google.com 302
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# WeChat公众号ads
+# hostname=mp.weixin.qq.com
+
+^https?:\/\/mp\.weixin\.qq\.com\/mp\/getappmsgad url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/QuantumultX/File/Wechat.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+#  - - - - - - - - - - - - - - - - - - - - -  #
+# MoLi整合
+# hostname = sub.store, boxjs.com, boxjs.net, h5.xiuxiu.meitu.com, api.xiuxiu.meitu.com, testflight.apple.com, app.bilibili.com, app.biliapi.net, app.biliintl.com, cn.pornhub.com, www.pornhub.com, m.douban.com, weixin110.qq.com, security.wechat.com, *.youtube.com
+
+# SUB-STORE
+^https?:\/\/sub\.store\/((download)|api\/(preview|sync|(utils\/node-info))) url script-analyze-echo-response https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-1.min.js
+^https?:\/\/sub\.store url script-analyze-echo-response https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-0.min.js
+
+# BoxJS
+^https?:\/\/boxjs\.(com|net) url script-analyze-echo-response https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.js
+
+# 美图秀秀VIP解锁
+#^https?:\/\/(h5|api)\.xiuxiu\.meitu\.com\/v\d\/(h\d\/vip|vip|user)\/ url script-response-body https://raw.githubusercontent.com/Moli-X/Resources/main/Script/MTxiuxiu/MeiTu.js
+
+# 美图秀秀粉钻解锁
+#^https:\/\/api\.xiuxiu\.meitu\.com\/v1 url script-response-body https://raw.githubusercontent.com/Moli-X/Resources/main/Script/MTxiuxiu/MTxiuxiu.js
+
+# TestFlight区域限制+共享
+^https:\/\/testflight\.apple\.com\/v\d\/(app|account|invite)s\/ url script-analyze-echo-response https://raw.githubusercontent.com/NobyDa/Script/master/TestFlight/TestFlightAccount.js
+^https?:\/\/testflight\.apple\.com\/v2\/accounts\/.*\/apps\/\d*/builds/\d*/install url request-body storefrontId" : ".*" request-body storefrontId" : "143441-1,29"
+
+# 哔哩哔哩界面自定义
+# hostname = app.bilibili.com, app.biliapi.net, app.biliintl.com  
+^https?:\/\/app\.bili(bili|api)\.(com|net)\/x\/resource\/show\/tab\/v2(\?.+)?$ url script-response-body https://raw.githubusercontent.com/BiliUniverse/Enhanced/main/js/BiliBili.Enhanced.response.js
+
+# 🔞PornHub广告拦截
+# hostname = *.pornhub.com
+#^https:\/\/(cn|www)\.pornhub\.com\/_xa\/ads url reject-dict
+#^https?:\/\/*(cn|www)\.pornhub\.com\/($|(view|video).*$) url script-response-body https://github.com/ddgksf2013/Scripts/raw/master/pornhub.js
+
+# 豆瓣电影添加播放按钮
+^https?:\/\/m\.douban\.com\/movie\/subject\/\d+\/ url script-response-body https://raw.githubusercontent.com/I-am-R-E/QuantumultX/main/JavaScript/DouBan.js
+
+# 微信跳过中间界面
+hostname = weixin110.qq.com, security.wechat.com
+^https\:\/\/(weixin110\.qq|security\.wechat)\.com\/cgi-bin\/mmspamsupport-bin\/newredirectconfirmcgi\? url script-response-body https://raw.githubusercontent.com/zZPiglet/Task/master/asset/UnblockURLinWeChat.js
+
+# YouTube字幕+画中画+去广告
+#^https:\/\/www\.youtube\.com\/api\/timedtext.+ url script-response-body https://raw.githubusercontent.com/Neurogram-R/Quantumult-X/main/Dualsub.js
+#^https:\/\/setting\.youtube\.com\/\?action=(g|s)et url script-analyze-echo-response https://raw.githubusercontent.com/Neurogram-R/Quantumult-X/main/Dualsub.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  # 
+#  - - - - - - - - - - - - - - - - - - - - -  # 
+# 收集癖
+
+# Foodie/轻图/B612相机/甜盐相机
+# hostname = purchase-*-api.*.com, user-kaji-api.b612kaji.com
+
+#^https?:\/\/(purchase-.*-api|user-kaji-api)\.(yiruikecorp|b612kaji|tianyancam)\.com\/v\d\/purchase\/subscription\/subscriber\/status url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/4gexj.js
+ 
+# 360相机
+# hostname = *.camera360.com
+#^https?:\/\/.*\.camera360\.com\/(api\/(order\/purchase|iap\/check-receipt)|v\d\/operational-positions) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/360xj.js
+
+# 驾考宝典
+# hostname = *.kakamobi.cn
+#^https?:\/\/.*\.kakamobi\.cn\/api\/open url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/jiakaobaodian.js
+
+# 人人视频
+# hostname = api.hujuvod.com, api.qwapp.top
+#^https?:\/\/api\.(hujuvod\.com|qwapp\.top)\/(user\/personal\/information|app\/drama\/page) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/renrenshipin.js
+
+# Hyperweb Safari浏览器扩展
+# hostname = zy6kcqa01a.execute-api.us-east-2.amazonaws.com
+#^https?:\/\/zy6kcqa01a\.execute-api\.us-east-2\.amazonaws\.com\/prod\/verifyReceipt url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/Hyperweb.js
+
+# WPS Office
+# hostname = *.wps.cn
+#^https?:\/\/(vas|account|drive)\.wps\.cn\/(query\/api\/.+\/list_purchase_info|api\/(v\d\/spaces|users\/.+\/overview)) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/WPS.js
+
+# 夸克
+# hostname = drive*.quark.cn
+#^https?:\/\/drive.*\.quark\.cn\/.+\/clouddrive\/(member.+|distribute\/detail.+|capacity\/growth\/info) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/kuake.js
+
+# 配音秀
+# hostname = iosapi.peiyinxiu.com
+#^https?:\/\/iosapi\.peiyinxiu\.com url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/peiyinxiu.js
+
+# 得间小说
+# hostname = dj.palmestore.com
+#^https?:\/\/dj\.palmestore\.com\/zyuc\/api\/user\/accountInfo url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/dejianxiaoshuo.js
+
+# 美图秀秀
+# hostname = *.xiuxiu.meitu.com, api.posters.meitu.com, api-*.meitu.com
+#^https?:\/\/((h5|api)\.xiuxiu|api-sub|api\.posters)\.meitu\.com\/.+\/(vip|user|h\d|center|home) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/mtxx.js
+
+# 美颜相机
+# hostname = *.meiyan.com
+#^https?:\/\/(api|community)\.meiyan\.com\/(vip|v\d)\/(user_center|user_info|user\/(.*?)) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/myxj.js
+
+# 番薯小说
+# hostname = ggs.manmeng168.com
+#^https?:\/\/ggs\.manmeng168\.com url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/fanshuxiaoshuo.js
+
+# 爱剪辑
+# hostname = api.open.loveclip.site
+#^https?:\/\/api\.open\.loveclip\.site\/UserInfo\/(UserPersonalCoreAsync|GetUserDetail) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/ajj.js
+
+# 电视家
+# hostname = share.dianshihome.com, api.gaoqingdianshi.com, 123.56.125.184
+#^https?:\/\/(share\.dianshihome\.com\/api\/user\/base\/info|123\.56\.125\.184\/api\/.+\/user\/info|api\.gaoqingdianshi\.com\/api\/ad\/mobile\/config) url script-response-body https://raw.gi
+
+# 婚礼纪
+# hostname = *.hunliji.com
+#^https?:\/\/(api|www)\.hunliji\.com url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/hlj.js
+
+# 波点音乐
+# hostname = bd-api.kuwo.cn
+#^https:\/\/bd-api\.kuwo\.cn\/api\/(ucenter\/users|play\/listening\/user|service\/(home\/index|banner\/myPage|advert\/watch)) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/bodian.js
+
+# FT中文网/RainViewer天气预报
+# hostname = *.cloudfront.net, ftmailbox.cn
+#^https?:\/\/.*\.cloudfront\.net\/(index\.php\/jsapi\/(paywall|get_story_more_info)|mobile\/verify) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/cloudfront.js
+#^https?:\/\/ftmailbox\.cn\/ad_impression url reject-200
+
+# 建工计算器
+# hostname = calc.kuaicad.com
+#^https?:\/\/calc\.kuaicad\.com\/authority\/verify_vip url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/jgjsq.js
+
+# Picsart美易_图片视频编辑器
+# hostname = api.meiease.cn
+#^https?:\/\/api\.meiease\.cn\/shop\/subscription\/(validate|apple\/purchases) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/picsart.js
+
+# Spotify (不能超高音质)
+# hostname = spclient.wg.spotify.com
+#^https?:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ url script-response-body https://raw.githubusercontent.com/app2smile/rules/master/js/spotify-proto.js
+#^https?:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/ url script-request-header https://raw.githubusercontent.com/app2smile/rules/master/js/spotify-json.js
+
+# 扫描全能王
+# hostname = *.camscanner.com, *.intsig.net
+#^https?:\/\/.*\.(intsig\.net|camscanner\.com) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/CamScanner.js
+
+# Emby(解锁播放权限)
+# hostname = mb3admin.com
+#^https?:\/\/mb3admin\.com\/admin\/service(\/registration\/validateDevice|\/appstore\/register|\/registration\/validate|\/registration\/getStatus|\/supporter\/retrievekey) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/embycrack.js
+
+# 悟饭掌悦
+# hostname = iosv2.cjapi.5fun.com
+#http:\/\/iosv2\.cjapi\.5fun\.com url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/wfzy.js
+
+# PS 图片编辑
+# hostname = lcs-mobile-cops.adobe.io
+#^https:\/\/lcs-mobile-cops\.adobe\.io\/(mobile_profile|mobiles\/access_profile) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/Ps.js
+
+# iTunes解锁系列
+# hostname = buy.itunes.apple.com
+#^https?:\/\/buy\.itunes\.apple\.com\/verifyReceipt$ url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/iTunes.js
+
+# Nicegram
+# hostname = restore-access.indream.app
+#^https?:\/\/restore-access\.indream\.app\/restoreAccess\?id=\d{5,10} url echo-response text/json echo-response https://raw.githubusercontent.com/chxm1023/Rewrite/main/Nicegram.js
+# Nicegram-兼容新旧版
+#^https?:\/\/(nicegram\.cloud\/api\/v\d\/user\/info|restore-access\.indream\.app\/restoreAccess) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/nicegram.js
+
+#  - - - - - - - - - - - - - - - - - - - - -  #
+#  - - - - - - - - - - - - - - - - - - - - -  #
+hostname = pan.baidu.com, *.aliyundrive.com, *.alipan.com, interface.music.163.com, sapphire.api.microsoftapp.net, assets.msn.com, api.msn.com, www.google.*, quantumult.app, *.pipix.com, api.spotify.com, spclient.wg.spotify.com, redirector*.googlevideo.com, *.googlevideo.com, www.youtube.com, s.youtube.com, youtubei.googleapis.com, raw.githubusercontent.com, gist.githubusercontent.com, www.google.cn, www.g.cn, mp.weixin.qq.com, sub.store, boxjs.com, boxjs.net, h5.xiuxiu.meitu.com, api.xiuxiu.meitu.com, testflight.apple.com, app.bilibili.com, app.biliapi.net, app.biliintl.com, cn.pornhub.com, www.pornhub.com, m.douban.com, weixin110.qq.com, security.wechat.com, *.youtube.com, purchase-*-api.*.com, user-kaji-api.b612kaji.com, *.camera360.com, *.kakamobi.cn, api.hujuvod.com, api.qwapp.top, zy6kcqa01a.execute-api.us-east-2.amazonaws.com, *.wps.cn, drive*.quark.cn, iosapi.peiyinxiu.com, dj.palmestore.com, *.xiuxiu.meitu.com, api.posters.meitu.com, api-*.meitu.com, *.meiyan.com, ggs.manmeng168.com, api.open.loveclip.site, share.dianshihome.com, api.gaoqingdianshi.com, 123.56.125.184, *.hunliji.com, bd-api.kuwo.cn
