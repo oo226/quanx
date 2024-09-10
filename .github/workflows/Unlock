@@ -72,26 +72,20 @@ app_name=super&([\S]*)aid=\d+ url 307 app_name=super_pro&$1aid=1412
 # Spotify
 # hostname = api.spotify.com, spclient.wg.spotify.com
 
-# > 歌词请求（JSON）
-^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json url script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js
-# > 歌词请求（Proto）
-^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*) url binary-body-mode script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js
+# > 歌词请求
+http-response ^https?:\/\/api\.spotify\.com\/v1\/tracks\? requires-body = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_response.js, tag = 跟踪响应·JSON
 
-# > 翻译歌词响应（JSON）
-^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=Translate url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js
-# > 翻译歌词响应（Proto）
-^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=Translate url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js
+http-request ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json requires-body = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js, tag = 歌词请求·JSON
+http-request ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*) requires-body = true, binary-body-mode = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js, tag = 歌词请求·Proto
 
-# > 外部歌词响应（JSON）
-^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=External url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js
-# > 外部歌词响应（Proto）
-^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=External url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js
+http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=Translate requires-body = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js, tag = 翻译歌词响应·JSON
+http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=Translate requires-body = true, binary-body-mode = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js, tag = 翻译歌词响应·Proto
 
-# > 去广告解锁 VIP
-^https:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/ url script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_remove_ads.js
-
-# > Proto处理
-^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_proto.js
+http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=External requires-body = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js, tag = 外部歌词响应·JSON
+http-response ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=External requires-body = true, binary-body-mode = true, script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js, tag = 外部歌词响应·Proto
+# > 去广告解锁vip
+http-request ^https:\/\/spclient\.wg\.spotify\.com\/(artistview\/v1\/artist|album-entity-view\/v2\/album)\/ script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_remove_ads.js, timeout = 10, tag = JSON处理
+http-response ^https:\/\/spclient\.wg\.spotify\.com\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ script-path = https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_proto.js, requires-body = true, binary-body-mode = true, timeout = 10, tag = Proto处理
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
 # Youtube Block AD
