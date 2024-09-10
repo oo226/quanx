@@ -72,24 +72,18 @@ app_name=super&([\S]*)aid=\d+ url 307 app_name=super_pro&$1aid=1412
 # Spotify
 # hostname = api.spotify.com, spclient.wg.spotify.com
 
-# > 歌词翻译
-^https?:\/\/api\.spotify\.com\/v1\/tracks\? url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_response.js
-
 # > 歌词请求（JSON）
 ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json url script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js
-
 # > 歌词请求（Proto）
 ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*) url binary-body-mode script-request-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Spotify_request.js
 
 # > 翻译歌词响应（JSON）
 ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=Translate url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js
-
 # > 翻译歌词响应（Proto）
 ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=Translate url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/Translate_response.js
 
 # > 外部歌词响应（JSON）
 ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/(.+)\?(.*)format=json(.*)subtype=External url script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js
-
 # > 外部歌词响应（Proto）
 ^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=External url binary-body-mode script-response-body https://github.com/Moli-X/Resources/raw/main/Loon/Spotify/Test/External_Lyrics_response.js
 
