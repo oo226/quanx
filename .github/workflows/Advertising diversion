@@ -1286,7 +1286,7 @@ host-suffix, adtracking.medproad.com, reject
 ＃滴滴出行去广告
 host, gwp.xiaojukeji.com, reject
 ip-cidr, 123.207.209.39/32, reject
-ip-cidr, 123 .207.209.60/32, reject
+ip-cidr, 123.207.209.60/32, reject
 ip-cidr, 139.199.240.12/32, reject
 ip-cidr, 139.199.240.15/32, reject
 
