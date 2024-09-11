@@ -2,6 +2,13 @@
 # 搬运各位大佬的资源进行整合，感谢可莉，感谢莫离，感谢墨鱼，感谢叮当猫和各位开源大佬（排名不分先后）侵权删
 # 使用声明：本人并未参与任何形式的金钱交易，仅限测试和学习，请勿转载与贩卖，下载使用后24小时请删除
 
+
+# 阿里巴巴
+HOST, dns.alidns.com, REJECT
+HOST, ems.youku.com, REJECT
+HOST, hudong.alicdn.com, REJECT
+HOST, ossgw.alicdn.com, REJECT
+HOST-SUFFIX, ut.taobao.com, REJECT
 # 拼多多&精简
 host, titan.pinduoduo.com, reject
 ip-cidr, 81.69.104.17/32, reject
@@ -63,12 +70,6 @@ ip-cidr, 183.194.214.14/32, reject
 ip-cidr, 36.152.46.3/32, reject
 ip-cidr, 49.234.252.81/32, reject
 ip-cidr, 49.235.102.145/32, reject
-# 阿里巴巴
-HOST, dns.alidns.com, REJECT
-HOST, ems.youku.com, REJECT
-HOST, hudong.alicdn.com, REJECT
-HOST, ossgw.alicdn.com, REJECT
-HOST-SUFFIX, ut.taobao.com, REJECT
 # 阿里云盘
 IP-CIDR, 203.107.1.1/24, REJECT
 # 爱奇艺
