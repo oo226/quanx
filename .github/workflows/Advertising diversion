@@ -64,6 +64,9 @@ ip-cidr, 183.194.214.14/32, reject
 ip-cidr, 36.152.46.3/32, reject
 ip-cidr, 49.234.252.81/32, reject
 ip-cidr, 49.235.102.145/32, reject
+
+host, avatar3-2.pddpic.com reject
+host, img-1.pddpic.com reject
 # 阿里巴巴
 HOST, dns.alidns.com, REJECT
 HOST, ems.youku.com, REJECT
