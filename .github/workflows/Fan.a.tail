@@ -100,7 +100,7 @@
 # 美团充电宝小程序
 # hostname = cdb.meituan.com
 
-^https?:\/\/cdb\.meituan\.com\/marketing\/source\/getPageSlotList url reject-dic
+^https?:\/\/cdb\.meituan\.com\/marketing\/source\/getPageSlotList url reject-dict
 
 # 今日水印相机
 # hostname = api.sogaha.cn
