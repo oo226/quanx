@@ -1310,6 +1310,14 @@ host, mobads-pre-config.cdn.bcebos.com, reject
 host, i.kejet.net, reject
 host, ssp.maplehaze.cn, reject
 host, t-dsp.pinduoduo.com, reject
+host, cad.kuaicad.com, reject
+host, analytics.oceanengine.com, reject
+host, cadtongji.kuaicad.com, reject
+host, da.anythinktech.com, reject
+host, adx-bj.anythinktech.com, reject
+host, bgg.baidu.com, reject
+host, tk.anythinktech.com, reject
+host, mssdk.volces.com, reject
 
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
