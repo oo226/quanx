@@ -1308,6 +1308,7 @@ ip-cidr, 139.199.240.15/32, reject
 # CAD快速看图
 host, mobads-pre-config.cdn.bcebos.com, reject
 host, i.kejet.net, reject
+host, ssp.maplehaze.cn, reject
 
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
