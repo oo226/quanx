@@ -1309,6 +1309,7 @@ ip-cidr, 139.199.240.15/32, reject
 host, mobads-pre-config.cdn.bcebos.com, reject
 host, i.kejet.net, reject
 host, ssp.maplehaze.cn, reject
+host, t-dsp.pinduoduo.com, reject
 
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
