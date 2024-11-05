@@ -150,7 +150,7 @@ DOMAIN, v.adx.hubcloud.com.cn, REJECT
 
 [Script]
 # 移除横幅广告
-http-response ^https:\/\/app-v1\.ecoliving168\.com\/api\/v1\/movie\/index_recommend\? script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/555DY/555DY_remove_ads.js, requires-body = true, tag = 移除横幅广告
+#http-response ^https:\/\/app-v1\.ecoliving168\.com\/api\/v1\/movie\/index_recommend\? script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/555DY/555DY_remove_ads.js, requires-body = true, tag = 移除横幅广告
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
 # 中国移动
@@ -221,10 +221,10 @@ DOMAIN, th.pinduoduo.com, REJECT
 ^https:\/\/api\.pinduoduo\.com\/api\/caterham\/v3\/query\/order_express_group reject-dict
 
 [Script]
-http-response ^https:\/\/api\.pinduoduo\.com\/api\/philo\/personal\/hub script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 拼多多去广告
-http-response ^https:\/\/api\.pinduoduo\.com\/api\/alexa\/homepage\/hub script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 精简首页
-http-response ^https:\/\/api\.pinduoduo\.com\/api\/oak\/integration\/render script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 拼多多去广告
-http-response ^https:\/\/api\.pinduoduo\.com\/search script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 移除搜索结果推广
+#http-response ^https:\/\/api\.pinduoduo\.com\/api\/philo\/personal\/hub script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 拼多多去广告
+#http-response ^https:\/\/api\.pinduoduo\.com\/api\/alexa\/homepage\/hub script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 精简首页
+#http-response ^https:\/\/api\.pinduoduo\.com\/api\/oak\/integration\/render script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 拼多多去广告
+#http-response ^https:\/\/api\.pinduoduo\.com\/search script-path = https://gitlab.com/lodepuly/vpn_tool/-/raw/master/Resource/Script/PinDuoDuo/PinDuoDuo_remove_ads.js, requires-body = true, tag = 移除搜索结果推广
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
 # 微博&国际版
@@ -874,11 +874,11 @@ DOMAIN-SUFFIX,doubleclick.net,REJECT
 # ======= 普通网页 ====== #
 ## 百度 //boxer.baidu.com, m.baidu.com, www.baidu.com, zhidao.baidu.com
 ## 百度防跳转
-^https:\/\/boxer\.baidu\.com\/scheme\?scheme url script-response-header https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/baidu/baiduNoRedirect.js
+#^https:\/\/boxer\.baidu\.com\/scheme\?scheme url script-response-header https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/baidu/baiduNoRedirect.js
 ## 百度首页
-^https:\/\/(www|m)\.baidu\.com(\/|\/\?(tn=&)?from=\d+\w)?$ url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/webpage/baidu-index.js
+#^https:\/\/(www|m)\.baidu\.com(\/|\/\?(tn=&)?from=\d+\w)?$ url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/webpage/baidu-index.js
 ## 百度知道
-^https:\/\/zhidao\.baidu\.com\/(question|index|\?fr|\?word) url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/webpage/baidu-zhidao.js
+#^https:\/\/zhidao\.baidu\.com\/(question|index|\?fr|\?word) url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/webpage/baidu-zhidao.js
 # 桌面端请使用 https://google.com/ncr
 # 谷歌服务重定向 //*.google.cn
 ^https?:\/\/www\.google\.cn url 302 https://www.google.com
@@ -887,22 +887,22 @@ DOMAIN-SUFFIX,doubleclick.net,REJECT
 # ======= ooxx ====== #
 # PornHub (https://cn.pornhub.com/) //*.pornhub.com
 ^https:\/\/(cn|www)\.pornhub\.com\/_xa\/ads(_batch)?\? url reject
-^https:\/\/(\w{0,3}(\.){0,1}(pornhub)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/Adblock4limboQX.js
+#^https:\/\/(\w{0,3}(\.){0,1}(pornhub)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/Adblock4limboQX.js
 # 禁漫天堂 (https://18comic.org/) //18comic.org, 18comic.vip
-^https:\/\/(\w{0,3}(\.){0,1}(18comic)(\.)\w{0,3})(?!.*?(\/(cdn-cgi|onclick)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/Adblock4limboQX.js
+#^https:\/\/(\w{0,3}(\.){0,1}(18comic)(\.)\w{0,3})(?!.*?(\/(cdn-cgi|onclick)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/Adblock4limboQX.js
 ^https:\/\/18comic\.(org|vip)\/templates\/frontend\/airav\/js\/jquery.avs.*?\.js.* url reject
 # JavBus (https://www.javbus.com/) //www.javbus.com
-^https:\/\/(\w{0,3}(\.){0,1}(javbus)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/javbusQX.js
+#^https:\/\/(\w{0,3}(\.){0,1}(javbus)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/javbusQX.js
 # JavDB //javdb.com
-^https:\/\/javdb\.com\/ url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/webpage/javdb.js
+#^https:\/\/javdb\.com\/ url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/webpage/javdb.js
 # Avple (https://avple.tv/) //*.avple.tv
-^https:\/\/(\w{0,3}(\.){0,1}(avple)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/avpleQX.js
+#^https:\/\/(\w{0,3}(\.){0,1}(avple)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/avpleQX.js
 # Avple 弹窗跳转
 ^https:\/\/asserts\.avple\.tv\/file\/avple-images\/ad\.js url reject
 # Jable (https://jable.tv/) //jable.tv
-^https:\/\/(\w{0,3}(\.){0,1}(jable)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/Adblock4limboQX.js
+#^https:\/\/(\w{0,3}(\.){0,1}(jable)(\.)\w{0,3})(?!.*?(\/(cdn-cgi)))(?!.*?(\.(css|js|jpeg|jpg|png|php|gif|ico|mp3|mp4|svg|tff|PNG|woff|woff2|m3u8))).* url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/limbo/Adblock4limboQX.js
 # missav 播放页弹窗 (https://missav.com/) //missav.com
-^https:\/\/missav\.com\/(dm\d+\/)?\w{2}\/[\w-]+ url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/myBlockAds.js
+#^https:\/\/missav\.com\/(dm\d+\/)?\w{2}\/[\w-]+ url script-response-body https://raw.githubusercontent.com/RuCu6/QuanX/main/Scripts/myBlockAds.js
 
 #  - - - - - - - - - - - - - - - - - - - - -  #
 #  - - - - - - - - - - - - - - - - - - - - -  #
