@@ -173,7 +173,7 @@ enhanced_github = type=http-request,pattern=^https?:\/\/(raw|gist)\.githubuserco
 
 # 哔哩哔哩界面自定义
 # hostname = app.bilibili.com, app.biliapi.net, app.biliintl.com  
-^https?:\/\/app\.bili(bili|api)\.(com|net)\/x\/resource\/show\/tab\/v2(\?.+)?$ url script-response-body https://raw.githubusercontent.com/BiliUniverse/Enhanced/main/js/BiliBili.Enhanced.response.js
+#^https?:\/\/app\.bili(bili|api)\.(com|net)\/x\/resource\/show\/tab\/v2(\?.+)?$ url script-response-body https://raw.githubusercontent.com/BiliUniverse/Enhanced/main/js/BiliBili.Enhanced.response.js
 
 # 🔞PornHub广告拦截
 # hostname = *.pornhub.com
