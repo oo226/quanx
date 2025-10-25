@@ -1,9 +1,18 @@
-#!name=PingMe 自动签到
-#!desc=首次启用后在 PingMe 内手动点一次“签到”自动捕获 URL/UA；此后每天 09:00 定时签到（可改 cronexp）。已内置 MITM：api.pingmeapp.net；脚本源：raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js
+#!name=PingMe 自动签到 + 视频奖励 · 固定三次
+#!desc=首次启用后：在 PingMe 内分别手动点一次【签到】和一次【看视频领奖】，自动捕获两条 URL/UA；之后自动执行：签到每天 09:00；视频奖励每天 09:00、15:00、21:00 三次。已内置 MITM：api.pingmeapp.net。
 
 [Script]
-PingMe-Capture = type=http-request,pattern=^https?:\/\/api\.pingmeapp\.net\/app\/checkIn\?.*,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,script-update-interval=86400
-PingMe-CheckIn = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,script-update-interval=86400
+# —— 捕获 ——（任一命中即可）
+# 捕获签到：/app/checkIn（请求阶段）
+PingMe-Capture-CheckIn = type=http-request,pattern=^https?:\/\/api\.pingmeapp\.net\/app\/checkIn\?.*,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=capture,script-update-interval=86400
+# 捕获视频奖励：/app/*（响应阶段，命中奖励 JSON 自动保存）
+PingMe-Capture-Reward  = type=http-response,pattern=^https?:\/\/api\.pingmeapp\.net\/app\/.*,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=sniff,script-update-interval=86400
+
+# —— 定时执行 —— 
+# 签到：每天 09:00
+PingMe-CheckIn  = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=checkin,script-update-interval=86400
+# 视频奖励：每天三次（09:00 / 15:00 / 21:00）
+PingMe-AdReward = type=cron,cronexp=0 9,15,21 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=ad,script-update-interval=86400
 
 [MITM]
 hostname = %APPEND% api.pingmeapp.net
