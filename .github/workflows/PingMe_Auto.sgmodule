@@ -1,11 +1,9 @@
-# PingMe 自动签到（远程版 · 零填写）
-# 第一次：启用模块 → 打开 App 手动点一次签到（脚本自动捕获 URL/UA）
-# 之后：每天 09:00 自动签到（要改时间，改 cronexp）
+#!name=PingMe 自动签到
+#!desc=首次启用后在 PingMe 内手动点一次“签到”自动捕获 URL/UA；此后每天 09:00 定时签到（可改 cronexp）。已内置 MITM：api.pingmeapp.net；脚本源：raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js
 
 [Script]
 PingMe-Capture = type=http-request,pattern=^https?:\/\/api\.pingmeapp\.net\/app\/checkIn\?.*,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,script-update-interval=86400
 PingMe-CheckIn = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,script-update-interval=86400
 
 [MITM]
-# 已内置域名；启用模块并信任证书即可
 hostname = %APPEND% api.pingmeapp.net
