@@ -1,27 +1,19 @@
-#!name=PingMe 稳定整合（直连+捕获+嗅探+定时）
-#!desc=只对白名单生效：/app/checkIn|/app/videoBonus 捕获；进入 PingMe 后 N 秒内广告域强制直连；09:00 签到，整点提醒看广告。不会影响其他 App 的去广告。
+#!name=PingMe 自动签到（仅签到）
+#!desc=首次启用后，在 App 里手点一次“签到”以自动保存 URL/UA；此后每天 09:00 自动签到（可改 cron）。仅对白名单域生效，不影响其它 App。
 
 [Script]
-# ① 点亮“直连窗口”（命中 pingme 后，后续 N 秒内让 Google Ads 域直连）
-PingMe-Flag = type=http-request,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/ ,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=flag,script-update-interval=1800
+# ① 捕获“签到”请求（保存 URL/UA/方法/Body）
+PingMe-Capture = type=http-request,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/app\/checkIn\b.* ,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=capture,script-update-interval=86400
 
-# ② 广告域按需直连（仅在窗口内生效；不影响其它 App）
-PingMe-Ads-Direct = type=http-request,pattern=^https?:\/\/(?:[a-z0-9-]+\.)?(?:doubleclick\.net|googlesyndication\.com|googleadservices\.com|adservice\.google\.[a-z\.]+|gvt1\.com|gvt2\.com|gvt3\.com|gstatic\.com)\/ ,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=ads&win=240,script-update-interval=1800
+# ② 嗅探“签到”响应（可选，用于确认捕获成功）
+PingMe-Sniff   = type=http-response,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/app\/checkIn\b.* ,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=sniff,script-update-interval=86400
 
-# ③ 你的兜底捕获（请求阶段）：只要命中 /app/checkIn|/app/videoBonus 就保存（无需解密）
-PingMe-Cap-Req  = type=http-request,pattern=^https?:\/\/[^\/]+\/app\/(?:checkIn|videoBonus)\b.* ,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=capture,script-update-interval=86400
-
-# ④ 嗅探（响应阶段）：若 JSON 里出现 bonus/bonusHint 等关键字段就确认保存（需 MITM）
-PingMe-Cap-Resp = type=http-response,pattern=^https?:\/\/[^\/]+\/app\/.* ,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=sniff,script-update-interval=86400
-
-# ⑤ 定时：签到自动，广告奖励到点提醒（广告接口有签名，改为提醒更稳）
-PingMe-CheckIn   = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=checkin,script-update-interval=86400
-PingMe-Ad-Notify = type=cron,cronexp=0 9,15,21 * * *,wake-system=1,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=ad,script-update-interval=86400
+# ③ 定时签到（默认 09:00）
+PingMe-CheckIn = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=checkin,script-update-interval=86400
 
 [MITM]
-hostname = %APPEND% *.pingmeapp.net, pingmeapp.net, api.pingmeapp.net
+hostname = %APPEND% api.pingmeapp.net, pingmeapp.net, *.pingmeapp.net
 
 [Rule]
-# 只对白名单直连；其它 App 的 Google 广告不受影响（直连由脚本窗口控制）
-DOMAIN-SUFFIX,pingmeapp.net,DIRECT
+# 只对白名单直连；不会影响其它软件的去广告
 DOMAIN,api.pingmeapp.net,DIRECT
