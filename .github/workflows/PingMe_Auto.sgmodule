@@ -1,26 +1,24 @@
-#!name=PingMe 按需直连 + 捕获 + 定时（仅此 App）
-#!desc=仅在使用 PingMe 时临时直连 Google Ads；平时不放行。放宽匹配：/app/* 或 URL 含 check|video|bonus|ad|reward|credit 即捕获。含定时任务。
+#!name=PingMe 稳定版（签到自动 + 广告按需直连 + 捕获嗅探）
+#!desc=只对白名单域生效；广告域仅在你刚使用 PingMe 的窗口内直连；不会影响其它 App；视频奖励改为到点提醒。
 
 [Script]
-# A) 标记“正在使用 PingMe”（命中它的任何接口即刷新窗口，默认180秒）
-PingMe-Flag = type=http-request,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/ ,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=cap5,argument=mode=flag,script-update-interval=1800
+# 点亮窗口（只要命中 pingme 接口，就开始 N 秒广告直连窗口）
+PingMe-Flag = type=http-request,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/ ,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=stable,argument=mode=flag,script-update-interval=1800
 
-# B) 仅在窗口期内对常见 Google Ads 等广告域临时直连（不影响其它 App）
-PingMe-Ads-Direct = type=http-request,pattern=^https?:\/\/(?:[a-z0-9-]+\.)?(?:doubleclick\.net|googlesyndication\.com|googleadservices\.com|adservice\.google\.[a-z\.]+|gstatic\.com|googleapis\.com|gvt1\.com|gvt2\.com)\/ ,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=cap5,argument=mode=ads&win=240,script-update-interval=1800
+# 广告域按需直连（窗口默认 240s，可改 win=）
+PingMe-Ads-Direct = type=http-request,pattern=^https?:\/\/(?:[a-z0-9-]+\.)?(?:doubleclick\.net|googlesyndication\.com|googleadservices\.com|adservice\.google\.[a-z\.]+|gvt1\.com|gvt2\.com|gvt3\.com|gstatic\.com)\/ ,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=stable,argument=mode=ads&win=240,script-update-interval=1800
 
-# C) 捕获（请求/响应双钩，放宽匹配到 /app/* 以及关键字）
-PingMe-Cap-Req = type=http-request,pattern=^https?:\/\/[^\/]+\/(?:app\/.*|.*(?:check|video|bonus|ad|reward|credit).*) ,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=cap5,argument=mode=capture&dbg=0,script-update-interval=1800
-PingMe-Cap-Resp = type=http-response,pattern=^https?:\/\/[^\/]+\/(?:app\/.*|.*(?:check|video|bonus|ad|reward|credit).*) ,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=cap5,argument=mode=sniff&dbg=0,script-update-interval=1800
+# 捕获（请求/响应，放宽匹配）
+PingMe-Cap-Req  = type=http-request, pattern=^https?:\/\/[^\/]+\/(?:app\/.*|.*(?:check|video|bonus|ad|reward|credit).*) ,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=stable,argument=mode=capture,script-update-interval=1800
+PingMe-Cap-Resp = type=http-response,pattern=^https?:\/\/[^\/]+\/(?:app\/.*|.*(?:check|video|bonus|ad|reward|credit).*) ,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=stable,argument=mode=sniff,script-update-interval=1800
 
-# D) 定时（按需改 cron）
-PingMe-CheckIn  = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=cap5,argument=mode=checkin,script-update-interval=86400
-PingMe-AdReward = type=cron,cronexp=0 9,15,21 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=cap5,argument=mode=ad,script-update-interval=86400
+# 定时：签到自动；视频奖励到点提醒（例如每小时整点）
+PingMe-CheckIn  = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=stable,argument=mode=checkin,script-update-interval=86400
+PingMe-Ad-Notify= type=cron,cronexp=0 * * * *,wake-system=1,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js?v=stable,argument=mode=ad,script-update-interval=86400
 
 [MITM]
-# 仅对 pingme 业务域解密（广告域不解密，避免影响播放）
 hostname = %APPEND% *.pingmeapp.net, pingmeapp.net, api.pingmeapp.net
 
 [Rule]
-# 永远直连 pingme 自身业务域（仅影响该 App）
 DOMAIN-SUFFIX,pingmeapp.net,DIRECT
 DOMAIN,api.pingmeapp.net,DIRECT
