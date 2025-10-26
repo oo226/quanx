@@ -1,0 +1,14 @@
+#!name=PingMe 白名单直连（仅此 App）
+#!desc=仅将 PingMe 的请求直连，不改动任何通用广告域。请把本模块置于所有去广告模块之上。
+
+[Rule]
+# ① 识别并直连 PingMe 的请求（两种特征择其一即可命中）
+#   A) App 自带 UA（例：PingMe/1.9.2 (tel.pingme; ...)）
+USER-AGENT,PingMe/*,DIRECT
+#   B) 接口 URL 含 clienttag=PingMeIOS / tel.pingme 等标识（你抓包里已出现）
+URL-REGEX,^https?:\/\/[^\/]+\/app\/.*(?:clienttag=PingMeIOS|tel\.pingme),DIRECT
+
+# ② 永远直连它的业务域（只影响本 App）
+DOMAIN-SUFFIX,pingmeapp.net,DIRECT
+DOMAIN,api.pingmeapp.net,DIRECT
+DOMAIN,pingmeapp.net,DIRECT
