@@ -1,17 +1,26 @@
-#!name=PingMe 自动签到 + 视频奖励 · 固定三次
-#!desc=首次启用后：在 PingMe 内各执行一次【签到】与【看广告领奖】，自动捕获两条 URL/UA。之后自动执行：签到 09:00；视频奖励 09:00/15:00/21:00。已内置 MITM：api.pingmeapp.net。
+#!name=PingMe 按需直连 + 捕获 + 定时（仅此 App）
+#!desc=仅当正在使用 PingMe 时临时直连 Google Ads 等广告域；平时不放行。永远直连 pingme 业务域；不影响其它 App 的去广告。含捕获/嗅探与定时任务。
 
 [Script]
-# —— 捕获（请求阶段）：/checkIn 和 /videoBonus 都抓 —— 可靠
-PingMe-Capture-Req     = type=http-request,pattern=^https?:\/\/api\.pingmeapp\.net\/app\/(checkIn|videoBonus)\?.*,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=capture,script-update-interval=86400
-# —— 捕获（响应阶段嗅探）：兜底识别带 bonusHint/bonus/aftercredit 的 JSON
-PingMe-Capture-Reward  = type=http-response,pattern=^https?:\/\/api\.pingmeapp\.net\/app\/.*,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=sniff,script-update-interval=86400
+# 1) 命中 PingMe 接口：刷新“正在使用”标记（不打扰）
+PingMe-Flag = type=http-request,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=flag,script-update-interval=86400
 
-# —— 定时执行 —— 
-# 签到：每天 09:00
+# 2) 仅在窗口期内对广告域临时直连（默认 180 秒，可用 &win=300 调整）
+PingMe-Ads-Direct = type=http-request,pattern=^https?:\/\/(?:[a-z0-9-]+\.)?(?:doubleclick\.net|googlesyndication\.com|googleadservices\.com|adservice\.google\.[a-z\.]+|gstatic\.com|googleapis\.com|gvt1\.com|gvt2\.com)\/,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=ads&win=180,script-update-interval=86400
+
+# 3) 捕获（请求/响应双钩），只针对 /app/* 业务接口
+PingMe-Cap-Req  = type=http-request,pattern=^https?:\/\/[^\/]+\/app\/.* ,requires-body=0,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=capture,script-update-interval=86400
+PingMe-Cap-Resp = type=http-response,pattern=^https?:\/\/[^\/]+\/app\/.* ,requires-body=1,timeout=15,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=sniff,script-update-interval=86400
+
+# 4) 定时：签到 09:00；广告 09/15/21（可自行改 cron）
 PingMe-CheckIn  = type=cron,cronexp=0 9 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=checkin,script-update-interval=86400
-# 视频奖励：每天 09:00 / 15:00 / 21:00
 PingMe-AdReward = type=cron,cronexp=0 9,15,21 * * *,wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=ad,script-update-interval=86400
 
 [MITM]
-hostname = %APPEND% api.pingmeapp.net
+# 只对 pingme 业务域解密（广告域不 MITM，避免影响播放）
+hostname = %APPEND% *.pingmeapp.net, pingmeapp.net, api.pingmeapp.net
+
+[Rule]
+# 永远直连 PingMe 自身业务域（仅影响此 App）
+DOMAIN-SUFFIX,pingmeapp.net,DIRECT
+DOMAIN,api.pingmeapp.net,DIRECT
