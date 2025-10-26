@@ -1,14 +1,14 @@
-#!name=PingMe 白名单直连（仅此 App）
-#!desc=仅将 PingMe 的请求直连，不改动任何通用广告域。请把本模块置于所有去广告模块之上。
+#!name=PingMe 按需直连（仅此 App）
+#!desc=仅当正在使用 PingMe 时，临时直连广告域；平时不放行。永远直连 pingme 的业务域。不影响其它 App 的去广告。
+
+[Script]
+# 1) 只要命中 PingMe 的接口，就打个“正在使用”时间戳
+PingMe-Flag = type=http-request,pattern=^https?:\/\/(?:api\.)?pingmeapp\.net\/,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=flag,script-update-interval=86400
+
+# 2) 对常见 Google Ads 域做“条件直连”：仅在窗口期内生效
+PingMe-Ads-Direct = type=http-request,pattern=^https?:\/\/(?:pagead|securepubads|googleads|tpc|www\.googleadservices|static\.doubleclick|.+\.doubleclick|.+\.googlesyndication|.+\.googleapis|.+\.gstatic)\.([a-z\.]+)\/,requires-body=0,timeout=10,script-path=https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/pingme_surge.js,argument=mode=ads,script-update-interval=86400
 
 [Rule]
-# ① 识别并直连 PingMe 的请求（两种特征择其一即可命中）
-#   A) App 自带 UA（例：PingMe/1.9.2 (tel.pingme; ...)）
-USER-AGENT,PingMe/*,DIRECT
-#   B) 接口 URL 含 clienttag=PingMeIOS / tel.pingme 等标识（你抓包里已出现）
-URL-REGEX,^https?:\/\/[^\/]+\/app\/.*(?:clienttag=PingMeIOS|tel\.pingme),DIRECT
-
-# ② 永远直连它的业务域（只影响本 App）
+# 3) 业务域永远直连（只影响 PingMe 自己）
 DOMAIN-SUFFIX,pingmeapp.net,DIRECT
 DOMAIN,api.pingmeapp.net,DIRECT
-DOMAIN,pingmeapp.net,DIRECT
