@@ -1,115 +1,85 @@
-// PingMe for Surge — 稳定版：签到自动化 + 广告按需直连 + 捕获/嗅探 + 调试提示
+// PingMe - 仅签到
 // by oo226 + chatgpt
 
+const isReq = typeof $request !== 'undefined';
+const isResp = typeof $response !== 'undefined';
+
+const Arg = (() => {
+  const s = (typeof $argument === 'string' && $argument) ? $argument : '';
+  const o = {}; s.split('&').forEach(p => { const [k, v] = p.split('='); if (k) o[k] = v ?? true; });
+  return o;
+})();
+
 const K = {
-  UA: 'pingme.ua',
-  CK_URL: 'pingme.checkin.url', CK_MTD: 'pingme.checkin.method', CK_BDY: 'pingme.checkin.body', CK_TS:'pingme.checkin.ts',
-  AD_URL: 'pingme.ad.url',      AD_MTD: 'pingme.ad.method',      AD_BDY: 'pingme.ad.body',      AD_TS:'pingme.ad.ts',
-  FLAG_TS: 'pingme.flag.ts',
+  UA:       'pingme.ua',
+  CK_URL:   'pingme.checkin.url',
+  CK_MTD:   'pingme.checkin.method',
+  CK_BDY:   'pingme.checkin.body'
 };
 
-const R = k => $persistentStore.read(k) || '';
-const W = (k,v) => $persistentStore.write(String(v ?? ''), k);
-const N = (t,s='',b='') => { try{$notification.post(t,s,b);}catch{} };
-const brief = s => (s||'').length>220 ? (s||'').slice(0,220)+'…' : (s||'');
-const J = s => { try{return JSON.parse(s)}catch{return null} };
+const read  = k => $persistentStore.read(k) || '';
+const write = (k,v) => { $persistentStore.write(String(v||''), k); };
+const notify = (t, s = '', m = '') => { $notification.post(t, s, m); };
 
-const ARG  = (()=>{ try{ return Object.fromEntries(new URLSearchParams($argument||'')); }catch{ return {}; } })();
-const MODE = (ARG.mode||'').toLowerCase();
-const DBG  = (ARG.dbg||'0')==='1';
+function parseJSON(s) { try { return JSON.parse(s); } catch { return null; } }
 
-/* ========== 按需直连广告域（窗口内） ========== */
-if (typeof $request!=='undefined' && MODE==='ads'){
-  const winSec = Number(ARG.win||'240');
-  const ts = Number(R(K.FLAG_TS)||0);
-  const ok = ts && (Date.now()-ts) < winSec*1000;
-  if (ok) $done({ policy: 'DIRECT' }); else $done({});
-  return;
+function req(method, opts, cb){
+  const o = { url: opts.url, headers: opts.headers || {}, body: opts.body };
+  if (method === 'POST') { $httpClient.post(o, cb); } else { $httpClient.get(o, cb); }
 }
 
-/* ========== 标记使用中（点亮窗口） ========== */
-if (typeof $request!=='undefined' && MODE==='flag'){
-  W(K.FLAG_TS, Date.now());
-  if (DBG) N('PingMe Flag','窗口已激活', $request.url||'');
-  $done({});
-  return;
-}
-
-/* ========== 捕获（请求阶段） ========== */
-if (typeof $request!=='undefined' && MODE==='capture'){
-  const url=$request.url||'';
-  const mtd=($request.method||'GET').toUpperCase();
-  const ua =($request.headers?.['User-Agent']||$request.headers?.['user-agent']||'')+'';
-  if (ua) W(K.UA, ua);
-
-  const isCheck = /\/app\/checkIn\b/i.test(url) || /[?&]check/i.test(url);
-  const isVideo = /\/app\/videoBonus\b/i.test(url) || /bonus|ad|reward|credit/i.test(url);
-
-  if (isCheck){
-    W(K.CK_URL,url); W(K.CK_MTD,mtd); if(mtd!=='GET' && $request.body) W(K.CK_BDY,$request.body); W(K.CK_TS,Date.now());
-    N('✅ 已捕获【签到】请求','',brief(url));
-  } else if (isVideo){
-    W(K.AD_URL,url); W(K.AD_MTD,mtd); if(mtd!=='GET' && $request.body) W(K.AD_BDY,$request.body); W(K.AD_TS,Date.now());
-    N('✅ 已捕获【视频奖励】请求','',brief(url));
-  } else if (/\/app\//i.test(url) && DBG){
-    N('命中请求 (PingMe)','',brief(url));
+function doCapture() {
+  const u = $request.url || '';
+  if (/\/app\/checkIn\b/.test(u)) {
+    const h = $request.headers || {};
+    write(K.CK_URL, u);
+    write(K.UA, h['User-Agent'] || h['user-agent'] || '');
+    write(K.CK_MTD, $request.method || 'GET');
+    write(K.CK_BDY, $request.body || '');
+    notify('PingMe 已捕获“签到”URL', '', '后续将按计划自动签到');
   }
   $done({});
-  return;
 }
 
-/* ========== 嗅探（响应阶段，需要 MITM） ========== */
-if (typeof $response!=='undefined' && MODE==='sniff'){
-  try{
-    const url=$request.url||'';
-    const ct  = (''+($response.headers?.['Content-Type']||$response.headers?.['content-type']||'')).toLowerCase();
-    const body= typeof $response.body==='string' ? $response.body : '';
-    const isJ = ct.includes('application/json') || /^\s*[\{\[]/.test(body);
-    if (isJ){
-      const d=J(body)||{}; const r=d.result||{}; const hint=(r.bonusHint||'')+'';
-      const looks = d.retcode===0 && (hint.includes('广告')||hint.includes('观看')||r.bonus!=null||r.aftercredit!=null||r.totalbonus!=null||r.allbonus!=null||r.checkintimes!=null);
-      if (looks){
-        const isCk = /check/i.test(url) || /checkin/i.test(url);
-        if (isCk){ W(K.CK_URL,url); W(K.CK_TS,Date.now()); }
-        else     { W(K.AD_URL,url); W(K.AD_TS,Date.now()); }
-        N(`✅ 嗅探到${isCk?'签到':'视频奖励'}响应`, '', hint || brief(JSON.stringify(r)));
-      }
+function doSniff() {
+  const h = $response.headers || {};
+  const ct = h['Content-Type'] || h['content-type'] || '';
+  if (ct.includes('application/json')) {
+    const j = parseJSON($response.body || '');
+    if (j && (j.retcode === 0 || j.result)) {
+      const r = j.result || {};
+      const msg = r.bonusHint || (r.bonus ? `+${r.bonus}，余额≈${r.aftercredit}` : '');
+      notify('PingMe 嗅探到签到返回', 'retcode=' + (j.retcode ?? ''), msg);
     }
-  }catch(e){ if(DBG) N('Sniff 异常','',String(e)); }
+  }
   $done({});
-  return;
 }
 
-/* ========== 定时/手动：签到可自动；广告只提示 ========== */
-if (typeof $request==='undefined' && typeof $response==='undefined'){
-  const ua = R(K.UA);
+function doCheckin() {
+  const url = read(K.CK_URL);
+  let   ua  = read(K.UA);
+  const mtd = (read(K.CK_MTD) || 'GET').toUpperCase();
+  const bdy = read(K.CK_BDY) || '';
 
-  function http(m,u,a,b,cb){
-    const opt={url:u,headers:a?{'User-Agent':a}:undefined};
-    const f=(m==='POST')?$httpClient.post:$httpClient.get;
-    if(m==='POST' && b) opt.body=b;
-    f(opt,(e,r,d)=>cb(e,r,d));
-  }
+  if (!url) { notify('PingMe 签到', '缺少“签到”URL', '请先在 App 里手点一次“签到”'); return $done(); }
+  if (!ua)   ua = 'PingMe/1.9.2 (tel.pingme; iOS)';
 
-  function runCheckin(done){
-    const url = R(K.CK_URL);
-    const mtd = (R(K.CK_MTD)||'GET').toUpperCase();
-    const bdy = R(K.CK_BDY)||'';
-    if(!url){ N('PingMe 签到','缺少 URL','请先在 App 里点一次“签到”'); done&&done(); return; }
-    http(mtd,url,ua,bdy,(e,r,d)=>{
-      const p=J(d)||{}; const ok=p.retcode===0; const msg=p.retmsg||p.msg||'';
-      N('PingMe 签到', ok?'成功':'失败', msg|| (e?String(e):''));
-      done&&done();
-    });
-  }
-
-  if (MODE==='checkin'){ runCheckin(()=> $done()); }
-  else if (MODE==='ad'){
-    // 只做提示，不请求（避免“系统时间不准”假报）
-    const ts=Number(R(K.AD_TS)||0);
-    const age = ts? Math.floor((Date.now()-ts)/1000)+'s 前捕获' : '尚未捕获';
-    N('PingMe 视频奖励','请手动进入 App 领取', age);
+  const headers = { 'User-Agent': ua, 'Accept': 'application/json' };
+  req(mtd, { url, headers, body: (mtd === 'POST' ? bdy : undefined) }, (e, r, d) => {
+    if (e) { notify('PingMe 签到', '网络错误', String(e)); return $done(); }
+    const j = parseJSON(d || '');
+    if (!j) { notify('PingMe 签到', '解析失败', 'HTTP ' + (r?.status || '')); return $done(); }
+    const ok = j.retcode === 0 || j.result;
+    const rsl = j.result || {};
+    const msg = rsl.bonusHint || (rsl.bonus ? `+${rsl.bonus}，余额≈${rsl.aftercredit}` : '') || ('HTTP ' + (r?.status || ''));
+    notify('PingMe 签到', ok ? '成功' : '失败', msg);
     $done();
-  }
-  else { runCheckin(()=> $done()); }
+  });
 }
+
+// 路由
+const mode = Arg.mode || (isReq ? 'capture' : (isResp ? 'sniff' : 'checkin'));
+if (mode === 'capture' && isReq)        doCapture();
+else if (mode === 'sniff' && isResp)    doSniff();
+else if (mode === 'checkin' && !isReq && !isResp) doCheckin();
+else $done({});
