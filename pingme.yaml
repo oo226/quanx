@@ -1,25 +1,27 @@
-name: PingMe 自动化签到+视频奖励
-desc: 自动抓取 PingMe 令牌并执行每日签到与视频翻倍任务。
-author: 怎么肥事 (Converted by Gemini)
+name: PingMe 签到助手
+desc: 自动抓取令牌并执行每日签到与视频翻倍任务。
+author: 怎么肥事 (Adapted for Egern)
 
-# 脚本配置
+# 脚本部分
 script:
-  # 触发抓取参数：手动打开 App 余额页面即可触发
+  # 触发抓取：手动打开 App 余额页面触发
   - name: PingMe_Capture
     type: http-request
     match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
-    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/cook.js
+    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
     body_required: false
-    update_interval: 86400
+    update_interval: 0
+    timeout: 60
 
-  # 定时签到：每天 08:30 和 20:30 执行
+  # 定时任务：每天 08:30 和 20:30 执行
   - name: PingMe_Task
     type: cron
     cron: "30 8,20 * * *"
     script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
-    timeout: 60
+    timeout: 300
+    update_interval: 0
 
-# 主机解密
+# 主机解密部分
 mitm:
   hostnames:
     - api.pingmeapp.net
