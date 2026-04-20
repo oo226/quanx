@@ -4,10 +4,10 @@
 @Author：怎么肥事
 
 [rewrite_local]
-^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus url script-request-header https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/PingMe.js
+^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus url script-request-header https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
 
 [task_local]
-30 8,20 * * * https://raw.githubusercontent.com/ZenmoFeiShi/Qx/refs/heads/main/PingMe.js, tag=PingMe签到, enabled=true
+30 8,20 * * * https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js, tag=PingMe签到, enabled=true
 
 [MITM]
 hostname = api.pingmeapp.net
