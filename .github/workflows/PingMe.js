@@ -5,10 +5,10 @@
 @Update: 2026-04-20
 
 [Egern 模块地址]
-https://raw.githubusercontent.com/你的用户名/你的仓库名/main/PingMe.yaml
+https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
 
 [脚本地址]
-https://raw.githubusercontent.com/你的用户名/你的仓库名/main/PingMe_Egern.js
+https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
 */
 
 
