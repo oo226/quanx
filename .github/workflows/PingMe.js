@@ -1,17 +1,16 @@
-//2026/04/16
 /*
-@Name：PingMe 自动化签到+视频奖励
+@Name：PingMe 自动化签到+视频奖励 (Egern 适配版)
 @Author：怎么肥事
+@Adapter: Gemini
+@Update: 2026-04-20
 
-[rewrite_local]
-^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus url script-request-header https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
+[Egern 模块地址]
+https://raw.githubusercontent.com/你的用户名/你的仓库名/main/PingMe.yaml
 
-[task_local]
-30 8,20 * * * https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js, tag=PingMe签到, enabled=true
-
-[MITM]
-hostname = api.pingmeapp.net
+[脚本地址]
+https://raw.githubusercontent.com/你的用户名/你的仓库名/main/PingMe_Egern.js
 */
+
 
 const scriptName = 'PingMe';
 const ckKey = 'pingme_capture_v3';
@@ -19,6 +18,7 @@ const SECRET = '0fOiukQq7jXZV2GRi9LGlO';
 const MAX_VIDEO = 5;
 const VIDEO_DELAY = 8000;
 
+// 工具函数：MD5 核心算法
 function MD5(string) {
   function RotateLeft(lValue, iShiftBits) { return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits)); }
   function AddUnsigned(lX, lY) {
@@ -98,12 +98,6 @@ function getUTCSignDate() {
   return `${now.getUTCFullYear()}-${pad(now.getUTCMonth()+1)}-${pad(now.getUTCDate())} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
 }
 
-function normalizeHeaderNameMap(headers) {
-  const out = {};
-  Object.keys(headers || {}).forEach(k => out[k] = headers[k]);
-  return out;
-}
-
 function parseRawQuery(url) {
   const query = (url.split('?')[1] || '').split('#')[0];
   const rawMap = {};
@@ -135,14 +129,9 @@ function buildUrl(path, capture) {
   return `https://api.pingmeapp.net/app/${path}?${qs}`;
 }
 
-function cloneHeaders(headers) {
-  const out = {};
-  Object.keys(headers || {}).forEach(k => out[k] = headers[k]);
-  return out;
-}
-
 function buildHeaders(capture) {
-  const headers = cloneHeaders(capture.headers || {});
+  const headers = {};
+  Object.keys(capture.headers || {}).forEach(k => headers[k] = capture.headers[k]);
   delete headers['Content-Length']; delete headers['content-length'];
   delete headers[':authority']; delete headers[':method']; delete headers[':path']; delete headers[':scheme'];
   headers['Host'] = 'api.pingmeapp.net';
@@ -150,23 +139,23 @@ function buildHeaders(capture) {
   return headers;
 }
 
+// 适配 Egern 的通知
 function notifyDone(title, body) {
-  $notify(scriptName, title, body);
+  $notification.post(scriptName, title, body);
 }
 
+// 逻辑开始
 if (typeof $request !== 'undefined' && $request) {
   const capture = {
     url: $request.url,
     paramsRaw: parseRawQuery($request.url),
-    headers: normalizeHeaderNameMap($request.headers || {})
+    headers: $request.headers
   };
-  $prefs.setValueForKey(JSON.stringify(capture), ckKey);
-  const keys = Object.keys(capture.paramsRaw).filter(k => k !== 'sign').join(', ');
+  $persistentStore.write(JSON.stringify(capture), ckKey);
   notifyDone('✅ 参数抓取成功', `已保存请求头+参数`);
-  console.log(`【${scriptName}】capture:\n${JSON.stringify(capture, null, 2)}`);
   $done({});
 } else {
-  const raw = $prefs.valueForKey(ckKey);
+  const raw = $persistentStore.read(ckKey);
   if (!raw) {
     notifyDone('⚠️ 未抓到参数', '先打开 PingMe 触发一次 ');
     $done();
@@ -175,77 +164,58 @@ if (typeof $request !== 'undefined' && $request) {
     try { capture = JSON.parse(raw); } catch (e) {
       notifyDone('⚠️ 参数损坏', '请重新打开 PingMe 抓参');
       $done();
-      return;
     }
 
     const headers = buildHeaders(capture);
     const msgs = [];
 
+    // 适配 Egern 的网络请求
     function fetchApi(path) {
-      return $task.fetch({ url: buildUrl(path, capture), method: 'GET', headers });
-    }
-
-    function doVideoLoop(count) {
-      let i = 0;
-      function next() {
-        if (i >= count) return Promise.resolve();
-        return new Promise(resolve => {
-          setTimeout(() => {
-            i++;
-            fetchApi('videoBonus').then(res => {
-              try {
-                const d = JSON.parse(res.body);
-                if (d.retcode === 0) {
-                  msgs.push(`🎬 视频${i}：+${d.result?.bonus || '?'} Coins`);
-                  resolve(next());
-                } else {
-                  msgs.push(`⏸ 视频${i}：${d.retmsg}`);
-                  resolve();
-                }
-              } catch (e) {
-                msgs.push(`❌ 视频${i}：解析失败`);
-                resolve();
-              }
-            }).catch(err => {
-              msgs.push(`❌ 视频${i}：${err.error || '请求失败'}`);
-              resolve();
-            });
-          }, i === 0 ? 1500 : VIDEO_DELAY);
+      return new Promise((resolve, reject) => {
+        $httpClient.get({ url: buildUrl(path, capture), headers }, (error, response, data) => {
+          if (error) reject(error);
+          else resolve({ body: data });
         });
-      }
-      return next();
+      });
     }
 
-    fetchApi('queryBalanceAndBonus').then(res => {
+    async function start() {
       try {
-        const d = JSON.parse(res.body);
+        // 1. 查询余额
+        let res = await fetchApi('queryBalanceAndBonus');
+        let d = JSON.parse(res.body);
         if (d.retcode === 0) msgs.push(`💰 余额：${d.result.balance} Coins`);
         else msgs.push(`⚠️ 查询：${d.retmsg}`);
-      } catch (e) {
-        msgs.push('❌ 查询：解析失败');
-      }
-      return fetchApi('checkIn');
-    }).then(res => {
-      try {
-        const d = JSON.parse(res.body);
+
+        // 2. 签到
+        res = await fetchApi('checkIn');
+        d = JSON.parse(res.body);
         if (d.retcode === 0) msgs.push(`✅ 签到：${(d.result?.bonusHint || d.retmsg || '').replace(/\n/g, ' ')}`);
         else msgs.push(`⚠️ 签到：${d.retmsg}`);
-      } catch (e) {
-        msgs.push('❌ 签到：解析失败');
-      }
-      return doVideoLoop(MAX_VIDEO);
-    }).then(() => {
-      return fetchApi('queryBalanceAndBonus');
-    }).then(res => {
-      try {
-        const d = JSON.parse(res.body);
+
+        // 3. 视频奖励循环
+        for (let i = 1; i <= MAX_VIDEO; i++) {
+          await new Promise(r => setTimeout(r, i === 1 ? 1000 : VIDEO_DELAY));
+          try {
+            res = await fetchApi('videoBonus');
+            d = JSON.parse(res.body);
+            if (d.retcode === 0) msgs.push(`🎬 视频${i}：+${d.result?.bonus || '?'} Coins`);
+            else { msgs.push(`⏸ 视频${i}：${d.retmsg}`); break; }
+          } catch (e) { msgs.push(`❌ 视频${i}：请求异常`); }
+        }
+
+        // 4. 再次查询余额
+        res = await fetchApi('queryBalanceAndBonus');
+        d = JSON.parse(res.body);
         if (d.retcode === 0) msgs.push(`💰 最新余额：${d.result.balance} Coins`);
-      } catch (e) {}
-      notifyDone('🎉 任务完成', msgs.join('\n'));
-      $done();
-    }).catch(err => {
-      notifyDone('❌ 任务失败', msgs.join('\n') + '\n' + (err.error || String(err)));
-      $done();
-    });
+
+        notifyDone('🎉 任务完成', msgs.join('\n'));
+      } catch (err) {
+        notifyDone('❌ 任务失败', String(err));
+      } finally {
+        $done();
+      }
+    }
+    start();
   }
 }
