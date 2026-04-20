@@ -8,7 +8,7 @@ script:
   - name: PingMe_Capture
     type: http-request
     match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
-    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
+    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/cook.js
     body_required: false
     update_interval: 86400
 
