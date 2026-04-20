@@ -1,0 +1,21 @@
+name: PingMe 签到助手
+desc: 适配 Egern 的 PingMe 自动化脚本
+
+script:
+  # 1. 抓取逻辑 (对应你的 Surge http-request)
+  - name: PingMe_GetCookie
+    type: http-request
+    match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
+    body_required: false
+
+  # 2. 签到任务 (对应你的 Surge cron)
+  - name: PingMe_CronTask
+    type: cron
+    cron: "30 8,20 * * *"
+    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
+    timeout: 300
+
+mitm:
+  hostnames:
+    - api.pingmeapp.net
