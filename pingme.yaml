@@ -1,0 +1,22 @@
+name: PingMe 签到助手
+description: 自动抓取 PingMe 令牌并执行每日签到及视频任务
+author: 怎么肥事 (Egern版)
+icon: https://raw.githubusercontent.com/oo226/quanx/main/icon.png
+
+scriptings:
+  - http_request:
+      name: PingMe_Capture
+      match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+      script_url: https://raw.githubusercontent.com/ZenmoFeiShi/Qx/main/PingMe.js
+      body_required: false
+      timeout: 60
+
+  - cron:
+      name: PingMe_Task
+      cron: "30 8,20 * * *"
+      script_url: https://raw.githubusercontent.com/ZenmoFeiShi/Qx/main/PingMe.js
+      timeout: 300
+
+mitm:
+  hostnames:
+    - api.pingmeapp.net
