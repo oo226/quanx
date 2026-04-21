@@ -1,8 +1,10 @@
 name: PingMe 签到助手
-desc: 自动抓取并执行每日签到
+description: 自动抓取 PingMe 令牌并执行每日签到及视频翻倍任务。
 author: 怎么肥事 (Adapted for Egern)
+homepage: https://github.com/oo226/quanx
+icon: https://raw.githubusercontent.com/oo226/quanx/main/icon.png
 
-# --- 注意下面的缩进，不要有多余空格 ---
+# --- 关键：必须包裹在 script 标签内 ---
 script:
   - name: PingMe_Capture
     type: http-request
@@ -11,13 +13,14 @@ script:
     body_required: false
     update_interval: 0
 
-  - name: PingMe_Task
+  - name: PingMe_Cron
     type: cron
     cron: "30 8,20 * * *"
     script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
     timeout: 300
     update_interval: 0
 
+# --- 域名解密 ---
 mitm:
   hostnames:
     - api.pingmeapp.net
