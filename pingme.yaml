@@ -1,27 +1,23 @@
 name: PingMe 签到助手
-desc: 自动抓取令牌并执行每日签到与视频翻倍任务。
+desc: 自动抓取并执行每日签到
 author: 怎么肥事 (Adapted for Egern)
 
-# 脚本部分
+# --- 注意下面的缩进，不要有多余空格 ---
 script:
-  # 触发抓取：手动打开 App 余额页面触发
   - name: PingMe_Capture
     type: http-request
     match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
     script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/cook.js
     body_required: false
     update_interval: 0
-    timeout: 60
 
-  # 定时任务：每天 08:30 和 20:30 执行
   - name: PingMe_Task
     type: cron
     cron: "30 8,20 * * *"
-    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.jsjs
+    script_url: https://raw.githubusercontent.com/oo226/quanx/main/.github/workflows/PingMe.js
     timeout: 300
     update_interval: 0
 
-# 主机解密部分
 mitm:
   hostnames:
     - api.pingmeapp.net
